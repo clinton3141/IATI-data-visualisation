@@ -20,16 +20,10 @@
 
 <script src="http://bit.ly/jqsource"></script>
 <script src="/socket.io/socket.io.js"></script>
-<script>
-var socket = io.connect('http://rhok-ciata.herokuapp.com');
-socket.on('echo', function (data) {
-alert(data);
-});
-socket.emit('echo', 'HELLO');
-</script>
+
 
 <script>
-	var socket = io.connect ('http://localhost');
+	var socket = io.connect ('http://rhok-ciata.herokuapp.com');
 	socket.on ('send', function (data) {
 		$("#results").html (data.toString());
 		console.log(data);
