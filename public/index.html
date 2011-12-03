@@ -12,14 +12,40 @@
 <body>
 <h1>ROHK</h1>
 
+	<input id="country-code" value="AF" />
+	<a id="submit">Click!</a>
 
+<div id="results">
+</div>
+
+<script src="http://bit.ly/jqsource"></script>
 <script src="/socket.io/socket.io.js"></script>
 <script>
-var socket = io.connect('http://rhok-ciata.herokuapp.com');
+var socket = io.connect('http://localhost');
 socket.on('echo', function (data) {
 alert(data);
 });
 socket.emit('echo', 'HELLO');
 </script>
+
+<script>
+	var socket = io.connect ('http://localhost');
+	socket.on ('send', function (data) {
+		$("#results").html (data.toString());
+		var activities = data.message['iati-activity'];
+		for (var i = 0; i < activites.length; i++ ) {
+			str += "<p>" + activities[i]['title'] + "</p>";
+		}
+	});
+	$(function () {
+		$("#submit").click (function (e) {
+			console.log('sending');
+			e.preventDefault ();
+			socket.emit ('country-detail', $("#country-code").attr("value"));
+			return false;
+		})
+	});
+</script>
+
 </body>
 </html>

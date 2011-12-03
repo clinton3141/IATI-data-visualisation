@@ -61,8 +61,14 @@ app.get ('/country-detail/:id', function (req, res) {
 
 io.sockets.on('connection', function (socket) {
 	console.log('connect!');
-	socket.on('echo', function (data) {
-		socket.emit ('echo', {message: data});
+	socket.on('country-detail', function (data) {
+		console.log('sendng!');
+		api.Request({result:'geo', pagesize:50, country:data.id})
+			.on('success', function (data) {
+				var activities = data['iata-activity'];
+
+				socket.emit ('send', {message: data});
+			}).end();
 	});
 });
 
