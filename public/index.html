@@ -25,6 +25,11 @@
 <script src="https://www.google.com/jsapi"></script>
 
 <script>
+
+request.defaults = {
+  format: "json",
+  corpus: "fullB"
+};
 	
 	
 	
@@ -32,8 +37,6 @@
 request({
   groupby: "SectorCategory",
   result: "values",
-  format: "json",
-  corpus: "fullB"
   }, function(response){
     
     var categories = _.as_array(response.SectorCategory);
@@ -51,14 +54,14 @@ request({
 
   
 // make a request for countries, then load in the google map
-var mapLoader = function(){
+var chartsLoaded = function(){
+  
+  
+  // load in all country values
   request({
     groupby: "Country",
     result: "values",
-    format: "json",
-    corpus: "fullB"
     }, function(response){
-      console.log(response);
       var countries = _(response.Country).as_array();
 
        var data = new google.visualization.DataTable();
@@ -78,7 +81,7 @@ var mapLoader = function(){
   });
 };
 
-google.load('visualization', '1.0', {packages:['geochart'], callback:mapLoader});
+google.load('visualization', '1.0', {packages:['geochart'], callback:chartsLoaded});
 
 </script>
 

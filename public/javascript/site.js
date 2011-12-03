@@ -49,7 +49,6 @@ _.mixin({
 
 /// API requester
 var request = (function(){
-  
   var socket = io.connect('http://' + location.host);
 
   var callbacks = {};
@@ -65,7 +64,9 @@ var request = (function(){
     var cbid = 'cb'+(cbCounter++);
     
     callbacks[cbid] = callback;
-
+    
+    _.defaults(params, request.defaults || {});
+    
     //send request
     socket.emit ('api', {params:params, cb:cbid});
   };
