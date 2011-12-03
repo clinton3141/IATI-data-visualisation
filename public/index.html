@@ -31,6 +31,13 @@
 
 	var callbacks = {};
 	var cbCounter = 0;
+
+	var default_settings = {
+		result: 'full',
+		pagesize: 50,
+		Founder: 'GB-CHC-202918'
+	};
+
 	var request = function (params, callback) {
 		// register callback
 		var cbid = 'cb'+(cbCounter++);
@@ -45,36 +52,9 @@
 		delete callbacks[data.cb]
 	})
 	
-	request({result:'geo', pagesize:50, country:'AF', Funder:'GB-CHC-202918'}, function(data){
-		console.log("GEO REQUEST:", data);
-	})
-	/*
-	socket.on ('requestx', function (data) {
-		console.log(data);
-	
-		$("#results").html (data.toString());
-		console.log(data);
-
-		var activities = data.message['iati-activity'];
-		console.log(activities);
-		var str = "";
-		for (var i = 0; i < activities.length; i++ ) {
-			var title = activities[i]['title']['#text'] || activities[i]['title']
-			str += "<p>" + title + "</p>";
-		}
-		$("#results").html(str);
-	});
-	$(function () {
-		$("#submit").click (function (e) {
-			$("#results").html('loading...');
-			e.preventDefault ();
-			//socket.emit ('country-detail', $("#country-code").attr("value"));
-			var code = $("#country-code").attr("value");
-			var params = {result:'geo', pagesize:50, country:code, Funder:'GB-CHC-202918'}
-			socket.emit ('request', params);
-			return false;
-		})
-	});*/
+	// request({result:'geo', pagesize:50, country:'AF', Funder:'GB-CHC-202918'}, function(data){
+	// 	console.log("GEO REQUEST:", data);
+	// });
 </script>
 
 </body>
