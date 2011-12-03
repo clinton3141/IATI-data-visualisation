@@ -1,14 +1,15 @@
-
 /**
  * Module dependencies.
  */
 
 var express = require('express')
   , routes = require('./routes')
-  , api = require('./lib/api.js')
-  ;
+  , api = require('./lib/api.js'),
+  io;
 
 var app = module.exports = express.createServer();
+io = require ('socket.io').listen(app);
+
 
 // Configuration
 
@@ -33,17 +34,21 @@ app.configure('production', function(){
 app.get('/data', function(req,res){
   api.Request({result:'geo', pagesize:50})
   .on('success', function(data){
-    var activities = data['iati-activity']
+    var activities = data['iati-activity'];
 
     //just send it straight to the client
     res.send(activities);
 
-  }).end()
+  }).end();
+});
 
+io.sockets.on('connection', function () {
+});
 
-
+io.sockets.on('echo', function (data) {
+	socket.emit ('echo', {message: data});
 });
 
 
-app.listen(process.env.PORT|| 3000);
+app.listen(ps.env.PORT|| 3000);
 console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
