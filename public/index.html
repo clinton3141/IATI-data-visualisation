@@ -13,7 +13,8 @@
 <h1>RHOK</h1>
 
 <div id="results">
-</div>
+</div>  
+  <div id="map_canvas" style="width:700px;height:400px"></div>
   <ul id="sectorcategories"></ul>
 
 <script src="/javascript/jquery.js"></script>
@@ -21,7 +22,7 @@
 <script src="/javascript/_.js"></script>
 <script src="/socket.io/socket.io.js"></script>
 <script src="/javascript/site.js"></script>
-
+<script src="https://www.google.com/jsapi"></script>
 
 <script>
 	
@@ -34,7 +35,6 @@ request({
   format: "json",
   corpus: "fullB"
   }, function(response){
-    console.log(response);
     
     var categories = _.as_array(response.SectorCategory);
     
@@ -49,7 +49,36 @@ request({
     });
 });
 
+  
+// make a request for countries, then load in the google map
+var mapLoader = function(){
+  request({
+    groupby: "Country",
+    result: "values",
+    format: "json",
+    corpus: "fullB"
+    }, function(response){
+      console.log(response);
+      var countries = _(response.Country).as_array();
 
+       var data = new google.visualization.DataTable();
+       var options = {dataMode:'regions'};
+       
+       data.addColumn('string', '', 'Country');
+       data.addColumn('number', 'Activities', 'a');
+       data.addRows(countries.length);
+       $.map(countries, function(country, i) {
+         data.setValue(i, 0, country.name);
+         data.setValue(i, 1, parseFloat(country.count));
+       });
+
+      var container = document.getElementById('map_canvas');
+      var geomap = new google.visualization.GeoChart(container);
+      geomap.draw(data, options);
+  });
+};
+
+google.load('visualization', '1.0', {packages:['geochart'], callback:mapLoader});
 
 </script>
 
