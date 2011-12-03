@@ -2,14 +2,18 @@
  * Module dependencies.
  */
 
-var express = require('express')
-  , routes = require('./routes')
-  , api = require('./lib/api.js'),
+var express = require('express'),
+	routes = require('./routes'),
+	api = require('./lib/api.js'),
   io;
 
 var app = module.exports = express.createServer();
 io = require ('socket.io').listen(app);
 
+io.configure(function () {
+  io.set("transports", ["xhr-polling"]);
+  io.set("polling duration", 10);
+});
 
 // Configuration
 
