@@ -5,15 +5,18 @@
 var express = require('express'),
 	routes = require('./routes'),
 	api = require('./lib/api.js'),
-	io = require ('socket.io');
+	io = require('socket.io');
 
 var app = module.exports = express.createServer();
 
 
+
+io = io.listen(app);
+
 io.configure(function () {
   io.set("transports", ["xhr-polling"]);
   io.set("polling duration", 10);
-}).listen(app);
+});
 
 // Configuration
 
@@ -46,13 +49,14 @@ app.get('/data', function(req,res){
   }).end();
 });
 
-io.sockets.on('connection', function () {
+io.sockets.on('connection', function (socket) {
+	console.log('connect!');
+	socket.on('echo', function (data) {
+		socket.emit ('echo', {message: data});
+	});
 });
 
-io.sockets.on('echo', function (data) {
-	socket.emit ('echo', {message: data});
-});
 
 
-app.listen(ps.env.PORT|| 3000);
+app.listen(process.env.PORT|| 3000);
 console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
