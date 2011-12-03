@@ -46,28 +46,13 @@ app.get ('/country-detail/:id', function (req, res) {
 		}).end();
 });
 
-// app.get('/data/*', function(req,res){
-	// console.log (req);
-	// res.send(req);
-  // api.Request({result:'geo', pagesize:50})
-  // .on('success', function(data){
-  //   var activities = data['iati-activity'];
-
-  //   //just send it straight to the client
-  //   res.send(data);
-
-  // }).end();
-// });
-
 io.sockets.on('connection', function (socket) {
 	console.log('connect!');
-	socket.on('country-detail', function (data) {
+	socket.on('api', function (data) {
 		console.log('sendng!');
-		api.Request({result:'geo', pagesize:50, country:data.id, funder:'GB-CHC-202918'})
-			.on('success', function (data) {
-				var activities = data['iata-activity'];
-
-				socket.emit ('send', {message: data});
+		api.Request(data.params)
+			.on('success', function (response) {
+				socket.emit ('api', {cb:data.cb,response:response});
 			}).end();
 	});
 });

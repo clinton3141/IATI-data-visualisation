@@ -18,20 +18,48 @@
 <div id="results">
 </div>
 
+
+
 <script src="http://bit.ly/jqsource"></script>
 <script src="/socket.io/socket.io.js"></script>
 
 
 <script>
-	var socket = io.connect ('http://rhok-ciata.herokuapp.com');
-	socket.on ('send', function (data) {
+	
+	var socket = io.connect ('http://' + location.host);
+
+	var callbacks = {};
+	var cbCounter = 0;
+	var request = function (params, callback) {
+		// register callback
+		var cbid = 'cb'+(cbCounter++);
+		callbacks[cbid] = callback;
+		
+		//send request
+		socket.emit ('api', {params:params, cb:cbid});
+	}
+	socket.on ('api', function (data) {
+		console.log("DATA",data);
+		callbacks[data.cb](data.response);
+		delete callbacks[data.cb]
+	})
+	
+	request({result:'geo', pagesize:50, country:'AF', Funder:'GB-CHC-202918'}, function(data){
+		console.log("GEO REQUEST:", data);
+	})
+	/*
+	socket.on ('requestx', function (data) {
+		console.log(data);
+	
 		$("#results").html (data.toString());
 		console.log(data);
 
 		var activities = data.message['iati-activity'];
+		console.log(activities);
 		var str = "";
 		for (var i = 0; i < activities.length; i++ ) {
-			str += "<p>" + activities[i]['title'] + "</p>";
+			var title = activities[i]['title']['#text'] || activities[i]['title']
+			str += "<p>" + title + "</p>";
 		}
 		$("#results").html(str);
 	});
@@ -39,10 +67,13 @@
 		$("#submit").click (function (e) {
 			$("#results").html('loading...');
 			e.preventDefault ();
-			socket.emit ('country-detail', $("#country-code").attr("value"));
+			//socket.emit ('country-detail', $("#country-code").attr("value"));
+			var code = $("#country-code").attr("value");
+			var params = {result:'geo', pagesize:50, country:code, Funder:'GB-CHC-202918'}
+			socket.emit ('request', params);
 			return false;
 		})
-	});
+	});*/
 </script>
 
 </body>
