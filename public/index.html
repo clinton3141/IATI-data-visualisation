@@ -21,7 +21,7 @@
 <script src="http://bit.ly/jqsource"></script>
 <script src="/socket.io/socket.io.js"></script>
 <script>
-var socket = io.connect('http://localhost');
+var socket = io.connect('http://rhok-ciata.herokuapp.com');
 socket.on('echo', function (data) {
 alert(data);
 });
@@ -32,14 +32,18 @@ socket.emit('echo', 'HELLO');
 	var socket = io.connect ('http://localhost');
 	socket.on ('send', function (data) {
 		$("#results").html (data.toString());
+		console.log(data);
+
 		var activities = data.message['iati-activity'];
-		for (var i = 0; i < activites.length; i++ ) {
+		var str = "";
+		for (var i = 0; i < activities.length; i++ ) {
 			str += "<p>" + activities[i]['title'] + "</p>";
 		}
+		$("#results").html(str);
 	});
 	$(function () {
 		$("#submit").click (function (e) {
-			console.log('sending');
+			$("#results").html('loading...');
 			e.preventDefault ();
 			socket.emit ('country-detail', $("#country-code").attr("value"));
 			return false;
