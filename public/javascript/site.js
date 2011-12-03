@@ -44,3 +44,29 @@ _.mixin({
     
     
 });
+
+
+
+/// API requester
+var request = (function(){
+  
+  var socket = io.connect('http://' + location.host);
+
+  var callbacks = {};
+  var cbCounter = 0;
+
+  socket.on('api', function(data) {
+    callbacks[data.cb](data.response);
+    delete callbacks[data.cb]
+  });
+  
+  return function (params, callback) {
+    // register callback
+    var cbid = 'cb'+(cbCounter++);
+    
+    callbacks[cbid] = callback;
+
+    //send request
+    socket.emit ('api', {params:params, cb:cbid});
+  };
+}());

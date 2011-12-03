@@ -19,35 +19,12 @@
 <script src="/javascript/jquery.js"></script>
 <script src="/javascript/d3.js"></script>
 <script src="/javascript/_.js"></script>
-<script src="/javascript/site.js"></script>
 <script src="/socket.io/socket.io.js"></script>
+<script src="/javascript/site.js"></script>
 
 
 <script>
 	
-	var socket = io.connect ('http://' + location.host);
-
-	var callbacks = {};
-	var cbCounter = 0;
-
-	var default_settings = {
-		result: 'full',
-		pagesize: 50,
-		Founder: 'GB-CHC-202918'
-	};
-
-	var request = function (params, callback) {
-		// register callback
-		var cbid = 'cb'+(cbCounter++);
-		callbacks[cbid] = callback;
-		
-		//send request
-		socket.emit ('api', {params:params, cb:cbid});
-	}
-	socket.on ('api', function (data) {
-		callbacks[data.cb](data.response);
-		delete callbacks[data.cb]
-	});
 	
 	
 // get the list of sector categories
