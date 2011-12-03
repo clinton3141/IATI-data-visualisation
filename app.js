@@ -63,7 +63,7 @@ io.sockets.on('connection', function (socket) {
 	console.log('connect!');
 	socket.on('country-detail', function (data) {
 		console.log('sendng!');
-		api.Request({result:'geo', pagesize:50, country:data.id})
+		api.Request({result:'geo', pagesize:50, country:data.id, funder:'GB-CHC-202918'})
 			.on('success', function (data) {
 				var activities = data['iata-activity'];
 
