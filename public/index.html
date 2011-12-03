@@ -12,14 +12,9 @@
 <body>
 <h1>RHOK</h1>
 
-	<input id="country-code" value="AF" />
-	<a id="submit">Click!</a>
-
 <div id="results">
 </div>
-<ul id="sectorcategories"></ul>
-
-
+  <ul id="sectorcategories"></ul>
 
 <script src="/javascript/jquery.js"></script>
 <script src="/javascript/d3.js"></script>
@@ -62,6 +57,8 @@ request({
   format: "json",
   corpus: "fullB"
   }, function(response){
+    console.log(response);
+    
     var categories = _.as_array(response.SectorCategory);
     
     _.each(categories, function(sc){
@@ -74,6 +71,7 @@ request({
         .appendTo('#sectorcategories');
     });
 });
+
 
 
 </script>
