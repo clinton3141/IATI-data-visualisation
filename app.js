@@ -3,7 +3,6 @@
  */
 
 var express = require('express'),
-	routes = require('./routes'),
 	api = require('./lib/api.js'),
 	io = require('socket.io');
 
@@ -39,19 +38,8 @@ app.configure('production', function(){
   app.use(express.errorHandler());
 });
 
-app.get ('/country-detail/:id', function (req, res) {
-	api.Request({result:'geo', pagesize:50, country:req.params.id})
-		.on('success', function (data) {
-			var activities = data['iata-activity'];
-
-			res.send(data);
-		}).end();
-});
-
 io.sockets.on('connection', function (socket) {
-	console.log('connect!');
 	socket.on('api', function (data) {
-		console.log('sendng!');
 		api.Request(data.params)
 			.on('success', function (response) {
 				socket.emit ('api', {cb:data.cb,response:response});
