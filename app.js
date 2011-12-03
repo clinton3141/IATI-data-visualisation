@@ -13,10 +13,12 @@ var app = module.exports = express.createServer();
 
 io = io.listen(app);
 
-io.configure(function () {
-  io.set("transports", ["xhr-polling"]);
-  io.set("polling duration", 10);
-});
+if (process.env.USE_XHTTPR) {
+	  io.configure(function () {
+	  io.set("transports", ["xhr-polling"]);
+	  io.set("polling duration", 10);
+	});
+}
 
 // Configuration
 
