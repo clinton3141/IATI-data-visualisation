@@ -17,6 +17,7 @@
 
 <div id="results">
 </div>
+<ul id="sectorcategories"></ul>
 
 
 
@@ -49,14 +50,32 @@
 		socket.emit ('api', {params:params, cb:cbid});
 	}
 	socket.on ('api', function (data) {
-		console.log("DATA",data);
 		callbacks[data.cb](data.response);
 		delete callbacks[data.cb]
-	})
+	});
 	
-	// request({result:'geo', pagesize:50, country:'AF', Funder:'GB-CHC-202918'}, function(data){
-	// 	console.log("GEO REQUEST:", data);
-	// });
+	
+// get the list of sector categories
+request({
+  groupby: "SectorCategory",
+  result: "values",
+  format: "json",
+  corpus: "fullB"
+  }, function(response){
+    var categories = _.as_array(response.SectorCategory);
+    
+    _.each(categories, function(sc){
+      $('<li>')
+        .text(sc.name)
+        .click(function(){
+          // TODO: implement this action
+          console.log("Sector Category:", sc)
+        })
+        .appendTo('#sectorcategories');
+    });
+});
+
+
 </script>
 
 </body>
