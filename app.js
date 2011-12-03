@@ -29,11 +29,6 @@ app.configure('production', function(){
   app.use(express.errorHandler()); 
 });
 
-// Routes
-
-app.get('/', routes.index);
-
-
 
 app.get('/data', function(req,res){
   api.Request({result:'geo', pagesize:50})
