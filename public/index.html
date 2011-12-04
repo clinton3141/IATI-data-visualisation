@@ -71,6 +71,8 @@ $("#sector-filter-list.init li").live ("click", function (e) {
 	e.preventDefault ();
 });
 
+
+
 // use to load in a new map
 var loadMapFor = function(options){
 	var sectors = options.SectorCategory || [],
@@ -79,6 +81,12 @@ var loadMapFor = function(options){
 	// show the loading status over the map and disable the filters
 	disableUI();
 
+	//function used to redraw regions when clicked on
+	var mapRedraw = function(e) {
+		var localOptions = {"dataMode":options.dataMode,"region":e.region};
+		geomap.draw(dataTable,localOptions);
+	}
+	
 	// load in the new map
   request({
     groupby: "Country",
@@ -115,7 +123,9 @@ var loadMapFor = function(options){
       
       geomap = new google.visualization.GeoChart(container);
       geomap.draw(dataTable, options);
-	  google.visualization.events.addListener(geomap, 'select', mapClick);
+		// google.visualization.events.addListener(geomap, 'select', mapClick)
+		google.visualization.events.addListener(geomap, 'regionClick', mapRedraw)
+	  ;
   });
 };
 
