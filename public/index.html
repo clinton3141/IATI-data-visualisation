@@ -130,6 +130,7 @@ var loadMapFor = function(options, region) {
 	  google.visualization.events.addListener(geomap, 'regionClick', function (e) {
 		  loadMapFor (options, e.region);
 	  });
+	  google.visualization.events.addListener(geomap, 'select', mapClick);
 	  
 	  //clicking on the reset map button resets the map
 	  $("#reset_button").click(function () {
