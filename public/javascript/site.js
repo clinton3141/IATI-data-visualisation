@@ -43,7 +43,11 @@ var request = (function(){
   var cbCounter = 0;
 
   socket.on('api', function(data) {
-    callbacks[data.cb](data.response);
+    if(data.error){
+      console.error("Server API Request error:", data.error);
+    } else {
+      callbacks[data.cb](data.response);
+    }
     delete callbacks[data.cb];
   });
 
