@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=Edge;chrome=1" >
   
-  <title>IATI programme visualisation</title>
+  <title>index</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="/css/reset.css" type="text/css" media="screen" charset="utf-8">
@@ -13,11 +13,12 @@
   <link rel="stylesheet" href="/css/jquery-ui-1.8.16.custom.css" type="text/css" media="screen" charset="utf-8">
 </head>
 <body>
-	<h1>Explore our projects</h1>
+<h1>Explore our projects</h1>
 
 	<div id="map_controls"> 
 		<h2>Toolbox</h2>
 		<p>Select the types of work you'd like to learn more about</p>
+		<div id="reset_button">Reset Map</div>
 		<form action="#">
 			<input id="start-date" type="hidden" name="start-date" />
 			<input type="hidden" id="end-date" name="end-date" />
@@ -27,6 +28,7 @@
 		</form>
 	</div>
   <div id="map_canvas">This tool currently requires javascript</div>
+  
   <div id="map_timeline">
 	  <h2>Move through time</h2>
 	  <p><span id="year-begin"></span> - <span id="year-end"></span></p>
@@ -49,12 +51,14 @@ google.load('visualization', '1', {'packages': ['geochart']});
 var geomap,
 	dataTable;
 
+	
 // default settings for the IATI call
 request.defaults = {
   format: "json",
   corpus: "fullB",
   // Funder: 'GB-CHC-202918' //oxfam
 };
+
 	
 // Replace 'you need javascript' messages with 'loading'
 document.getElementById('map_canvas').innerHTML = 'Please wait - loading map.';
@@ -73,6 +77,8 @@ $("#sector-filter-list.init li").live ("click", function (e) {
 
 
 
+
+
 // use to load in a new map
 var loadMapFor = function(options){
 	var sectors = options.SectorCategory || [],
@@ -84,8 +90,12 @@ var loadMapFor = function(options){
 	//function used to redraw regions when clicked on
 	var mapRedraw = function(e) {
 		var localOptions = {"dataMode":options.dataMode,"region":e.region};
-		geomap.draw(dataTable,localOptions);
-	}
+		if (e.region) { //if a valid region is clicked
+			geomap.draw(dataTable,localOptions); //draw clicked on region
+		} else {
+			geomap.draw(dataTable,options); // draw entire world map
+		}
+	}	
 	
 	// load in the new map
   request({
@@ -123,9 +133,14 @@ var loadMapFor = function(options){
       
       geomap = new google.visualization.GeoChart(container);
       geomap.draw(dataTable, options);
-		// google.visualization.events.addListener(geomap, 'select', mapClick)
-		google.visualization.events.addListener(geomap, 'regionClick', mapRedraw)
-	  ;
+	  // google.visualization.events.addListener(geomap, 'select', mapClick)
+	  google.visualization.events.addListener(geomap, 'regionClick', mapRedraw);
+	  
+	  //clicking on the reset map button resets the map
+	  $("#reset_button").live("click", function () {
+		geomap.draw(dataTable, options);
+	  });
+	  
   });
 };
 
@@ -213,7 +228,6 @@ function enableUI () {
 function disableUI () {
 	$("#sector-filter-list").addClass("loading").find("input").attr("disabled", "disabled");
 	$("#map_canvas").append ('<div class="loader" />');
-	$("#activities").empty ();
 }
 
 // add a nice slidey thingy for the date selection
