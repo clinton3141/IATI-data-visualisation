@@ -40,6 +40,8 @@
 
 <script>
 
+google.load('visualization', '1', {'packages': ['geochart']});
+
 request.defaults = {
   format: "json",
   corpus: "fullB"
@@ -56,8 +58,7 @@ $("#sector-filter-list.init li").live ("click", function (e) {
 	e.preventDefault ();
 });
 
-
-// get the list of sector categories
+//get the list of sector categories
 request({
   groupby: "SectorCategory",
   result: "values",
@@ -80,21 +81,19 @@ request({
     });
 });
 
-  
-// make a request for countries, then load in the google map
-var chartsLoaded = function(){
-  
-  
-  // load in all country values
+
+var loadMapFor = function(sectors){
+
   request({
     groupby: "Country",
     result: "values",
+    SectorCategory:sectors || [],
     }, function(response){
       var countries = _(response.Country).as_array();
 
        var data = new google.visualization.DataTable();
        var options = {dataMode:'regions'};
-       
+
        data.addColumn('string', '', 'Country');
        data.addColumn('number', 'Activities', 'a');
        data.addRows(countries.length);
@@ -107,9 +106,15 @@ var chartsLoaded = function(){
       var geomap = new google.visualization.GeoChart(container);
       geomap.draw(data, options);
   });
+  
 };
 
-google.load('visualization', '1.0', {packages:['geochart'], callback:chartsLoaded});
+
+$('body').on('change', 'input', function(){
+  loadMapFor($('form').serializeArray().map(function(elem){return elem.value}))
+})
+
+
 
 </script>
 
