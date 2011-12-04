@@ -42,6 +42,12 @@ body
 	width: 260px;
 }
 
+#reset_button
+{
+	width: 200px;
+	border: solid rgb(0,102,66) 2px;
+
+}
 #map_timeline
 {
 	clear: both;
