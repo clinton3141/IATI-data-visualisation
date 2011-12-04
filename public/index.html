@@ -19,6 +19,8 @@
 		<h2>Toolbox</h2>
 		<p>Select the types of work you'd like to learn more about</p>
 		<form action="#">
+			<input id="start-date" type="text" name="start-date" />
+			<input type="text" id="end-date" name="end-date" />
 			<ul class="init" id="sector-filter-list">
 				<li id="filter-loader">This tool currently requires javascript</li>
 			</ul>
@@ -27,6 +29,7 @@
   <div id="map_canvas">This tool currently requires javascript</div>
   <div id="map_timeline">
 	  <h2>Move through time</h2>
+	  <p><span id="year-begin"></span> - <span id="year-end"></span></p>
 	  <div id="time-slider"></div>
   </div>
 
@@ -69,7 +72,6 @@ request({
     $("#sector-filter-list").html(' ');
     _.each(categories, function(sc){
 
-				// <li><label><input type="checkbox" id="show_equity" /> Right to equity</label></li>
 		$('<li><label><input checked="checked" type="checkbox" name="SectorCategory" value="' + sc.code + '" /> ' + sc.name + '</label></li>')
         .appendTo('#sector-filter-list');
 
@@ -77,13 +79,18 @@ request({
 });
 
 
-var loadMapFor = function(sectors){
+var loadMapFor = function(options){
+	var sectors = options.sectors || [],
+	start = options['start-date'] || '1900-01-01',
+	end = options['end-date'] || '2100-01-01';
 	disableUI();
 
   request({
     groupby: "Country",
     result: "values",
     SectorCategory:sectors || [],
+	'start-date': start,
+	'end-date': end
     }, function(response){
 	enableUI();
       var countries = _(response.Country).as_array();
@@ -108,7 +115,11 @@ var loadMapFor = function(sectors){
 
 
 $('body').on('change', 'input', function(){
-  loadMapFor($('form').serializeArray().map(function(elem){return elem.value}))
+	loadMapFor({
+		SectorCategory: $('#map_controls input[type=checkbox]').serializeArray().map(function(elem){return elem.value}),
+		'start-date': $("#start-date").attr("value"),
+		'end-date': $("#end-date").attr("value")
+	});
 });
 
 
@@ -122,6 +133,28 @@ function disableUI () {
 	$("#map_canvas").append ('<div class="loader" />');
 }
 
+$( "#time-slider" ).slider({
+	values: [1950, (new Date()).getFullYear()],
+	min: 1950,
+	max: (new Date()).getFullYear(),
+	range: true,
+	step: 1,
+	slide: function( event, ui ) {
+		updateYears(ui.values[0], ui.values[1]);
+	},
+	stop: function (event, ui) {
+		$("#end-date").trigger("change");
+	}
+});
+// update the years now
+updateYears ($( "#time-slider" ).slider( "values", 0 ), $( "#time-slider" ).slider( "values", 1 ));
+
+function updateYears (begin, end) {
+		$("#year-begin").html(begin);
+		$("#year-end").html(end);
+		$("#start-date").attr("value", begin + '-01-01');
+		$("#end-date").attr("value", end + '-01-01');
+}
 
 // load the initial map
 loadMapFor([]);
