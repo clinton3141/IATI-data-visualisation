@@ -1,3 +1,93 @@
-* {
-	display: none !important
+/******************************************************************************
+ * CSS MENU
+ * --------
+ *
+ * 1) Main page elements
+ * 2) Typography
+ * 3) Toolbox
+ *
+ * Bon apetit!
+ *****************************************************************************/
+
+
+/******************************************************************************
+ * 1) Main page elements
+ *****************************************************************************/
+html
+{
+	font-family: Arial;
+	background-color: rgb(253,246,227);
+}
+
+body
+{
+	width: 960px;
+	margin: 0 auto;
+	padding: 15px;
+	background-color: #fff;
+}
+
+#map_canvas
+{
+	margin-bottom: 1em;
+	width:700px;
+	height:400px;
+	float: left;
+}
+
+#map_controls
+{
+	float: left;
+	width: 260px;
+}
+
+#map_timeline
+{
+	clear: both;
+}
+
+
+/******************************************************************************
+ * 2) Typography
+ *****************************************************************************/
+h1
+{
+	font-family: Cooper Black, Georgia;
+	font-size: 72px;
+	margin-bottom: 1em;
+	color: rgb(0,102,66);
+}
+
+h2
+{
+	font-family: Cooper Black, Geogia;
+	font-size: 24px;
+	margin-bottom: 0.5em;
+	color: rgb(151,190,13);
+}
+
+p, li
+{
+	line-height: 1.6em;
+}
+
+label
+{
+	cursor: pointer;
+}
+
+
+/******************************************************************************
+ * 3) Toolbox
+ *****************************************************************************/
+#map_controls ul
+{
+	list-style: none;
+	padding-left: 0;
+	margin-left: 0;
+}
+#map_controls li
+{
+	padding-left: 0;
+	margin-left: 0;
 }

@@ -10,16 +10,35 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="/css/reset.css" type="text/css" media="screen" charset="utf-8">
   <link rel="stylesheet" href="/css/master.css" type="text/css" media="screen" charset="utf-8">
+  <link rel="stylesheet" href="/css/jquery-ui-1.8.16.custom.css" type="text/css" media="screen" charset="utf-8">
 </head>
 <body>
-<h1>RHOK</h1>
+<h1>Explore our projects</h1>
 
+	<div id="map_controls"> 
+		<h2>Toolbox</h2>
+		<p>Select the types of work you'd like to learn more about</p>
+		<form action="#">
+			<ul>
+				<li><label><input type="checkbox" id="show_sustainable_life" /> Right to sustainable life</label></li>
+				<li><label><input type="checkbox" id="show_essential_services" /> Right to essential services</label></li>
+				<li><label><input type="checkbox" id="show_life_security" /> Right to life and security</label></li>
+				<li><label><input type="checkbox" id="show_be_heard" /> Right to be heard</label></li>
+				<li><label><input type="checkbox" id="show_equity" /> Right to equity</label></li>
+			</ul>
+		</form>
+	</div>
+  <div id="map_canvas">This tool currently requires javascript</div>
+  <div id="map_timeline">
+	  <h2>Move through time</h2>
+	  <div id="time-slider"></div>
+  </div>
+  <ul id="sectorcategories"></ul>
 <div id="results">
 </div>  
-  <div id="map_canvas" style="width:700px;height:400px"></div>
-  <ul id="sectorcategories"></ul>
 
 <script src="/javascript/jquery.js"></script>
+<script src="/javascript/jquery-ui-1.8.16.custom.min.js"></script>
 <script src="/javascript/d3.js"></script>
 <script src="/javascript/_.js"></script>
 <script src="/socket.io/socket.io.js"></script>
@@ -27,7 +46,7 @@
 <script src="https://www.google.com/jsapi"></script>
 
 <script>
-	
+document.getElementById('map_canvas').innerHTML = 'Please wait - loding map.';
 	
 	
 // get the list of sector categories
