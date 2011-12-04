@@ -76,7 +76,13 @@ label
 	cursor: pointer;
 }
 
-
+#sector-filter-list
+{
+	font-size: 10px;
+	text-transform: lowercase;
+	height: 300px;
+	overflow-y: scroll;
+}
 /******************************************************************************
  * 3) Toolbox
  *****************************************************************************/

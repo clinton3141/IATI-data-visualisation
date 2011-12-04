@@ -19,12 +19,8 @@
 		<h2>Toolbox</h2>
 		<p>Select the types of work you'd like to learn more about</p>
 		<form action="#">
-			<ul>
-				<li><label><input type="checkbox" id="show_sustainable_life" /> Right to sustainable life</label></li>
-				<li><label><input type="checkbox" id="show_essential_services" /> Right to essential services</label></li>
-				<li><label><input type="checkbox" id="show_life_security" /> Right to life and security</label></li>
-				<li><label><input type="checkbox" id="show_be_heard" /> Right to be heard</label></li>
-				<li><label><input type="checkbox" id="show_equity" /> Right to equity</label></li>
+			<ul class="init" id="sector-filter-list">
+				<li id="filter-loader">This tool currently requires javascript</li>
 			</ul>
 		</form>
 	</div>
@@ -33,9 +29,6 @@
 	  <h2>Move through time</h2>
 	  <div id="time-slider"></div>
   </div>
-  <ul id="sectorcategories"></ul>
-<div id="results">
-</div>  
 
 <script src="/javascript/jquery.js"></script>
 <script src="/javascript/jquery-ui-1.8.16.custom.min.js"></script>
@@ -47,7 +40,14 @@
 
 <script>
 document.getElementById('map_canvas').innerHTML = 'Please wait - loding map.';
-	
+document.getElementById('sector-filter-list').innerHTML = 'Please wait - loding map.';
+
+$("#sector-filter-list.init li").live ("click", function (e) {
+	$(this).attr("checked", true);
+	$(this).siblings().find("input[type=checkbox]").attr("checked", false);
+	$(this).parent().removeClass("init");
+	e.preventDefault ();
+});
 	
 // get the list of sector categories
 request({
@@ -58,15 +58,19 @@ request({
   }, function(response){
     
     var categories = _.as_array(response.SectorCategory);
-    
+    $("#sector-filter-list").html(' ');
     _.each(categories, function(sc){
-      $('<li>')
-        .text(sc.name)
-        .click(function(){
-          // TODO: implement this action
-          console.log("Sector Category:", sc)
-        })
-        .appendTo('#sectorcategories');
+
+				// <li><label><input type="checkbox" id="show_equity" /> Right to equity</label></li>
+		$('<li><label><input checked="checked" type="checkbox" name="SectorCategory" value="' + sc.code + '" /> ' + sc.name + '</label></li>')
+      // $('<li>')
+      //   .text(sc.name)
+      //   .click(function(){
+      //     // TODO: implement this action
+      //     console.log("Sector Category:", sc)
+      //   })
+        .appendTo('#sector-filter-list');
+
     });
 });
 
