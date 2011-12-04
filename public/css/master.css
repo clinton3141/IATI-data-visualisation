@@ -45,6 +45,7 @@ body
 #map_timeline
 {
 	clear: both;
+	margin: 0 20px;
 }
 
 .loader

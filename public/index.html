@@ -83,10 +83,11 @@ request({
 
 
 var loadMapFor = function(options){
-	var sectors = options.sectors || [],
+	var sectors = options.SectorCategory || [],
 	start = options['start-date'] || '1900-01-01',
 	end = options['end-date'] || '2100-01-01';
 	disableUI();
+	console.log(sectors);
 
   request({
     groupby: "Country",
