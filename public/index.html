@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=Edge;chrome=1" >
   
-  <title>index</title>
+  <title>IATI programme visualisation</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="/css/reset.css" type="text/css" media="screen" charset="utf-8">
@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="/css/jquery-ui-1.8.16.custom.css" type="text/css" media="screen" charset="utf-8">
 </head>
 <body>
-<h1>Explore our projects</h1>
+	<h1>Explore our projects</h1>
 
 	<div id="map_controls"> 
 		<h2>Toolbox</h2>
@@ -203,6 +203,7 @@ function enableUI () {
 function disableUI () {
 	$("#sector-filter-list").addClass("loading").find("input").attr("disabled", "disabled");
 	$("#map_canvas").append ('<div class="loader" />');
+	$("#activities").empty ();
 }
 
 // add a nice slidey thingy for the date selection
