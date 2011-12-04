@@ -33,6 +33,7 @@ body
 	width:700px;
 	height:400px;
 	float: left;
+	position: relative;
 }
 
 #map_controls
@@ -44,6 +45,16 @@ body
 #map_timeline
 {
 	clear: both;
+}
+
+.loader
+{
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	background: rgba(255,255,255,0.6) url(../images/loader.gif) center center no-repeat;
 }
 
 
@@ -82,6 +93,14 @@ label
 	text-transform: lowercase;
 	height: 300px;
 	overflow-y: scroll;
+}
+#sector-filter-list.loading
+{
+	color: #999;
+}
+#sector-filter-list.loading label
+{
+	cursor: auto;
 }
 /******************************************************************************
  * 3) Toolbox
