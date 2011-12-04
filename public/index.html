@@ -164,7 +164,8 @@ var loadActivitiesFor = function(countryCode){
   request({
     result: "values",
     Country:countryCode,
-    pagesize:50
+    pagesize:50,
+   SectorCategory: $('#sector-filter-list').val()
     }, function(data){
       var activityUL = $('#activities').empty();
 	  enableUI();
