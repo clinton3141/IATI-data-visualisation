@@ -35,6 +35,14 @@ body
 	float: left;
 	position: relative;
 }
+#map_wrapper
+{
+	float: left;
+	width:700px;
+	height:400px;
+	float: left;
+	position: relative;
+}
 
 #map_controls
 {
@@ -67,6 +75,55 @@ body
 	top: 0;
 	left: 0;
 	background: rgba(255,255,255,0.6) url(../images/loader.gif) center center no-repeat;
+}
+
+.instructions
+{
+position: absolute;
+top: 250px;
+left: 157px;
+background-color: rgba(0, 0, 0, 0.8);
+padding: 20px;
+font-size: 30px;
+border-radius: 5px;
+color: white;
+}
+
+#activities
+{
+	margin: 20px 0 0 0;
+	padding: 0;
+}
+#activities:after
+{
+	content: ".";
+	display: block;
+	clear: both;
+	width: 0;
+	height: 0;
+	visibility: hidden;
+}
+#activities div
+{
+	float: left;
+	border-radius: 5px;
+	box-shadow: 3px 3px 1px rgba(0,0,0,0.3);
+	padding: 10px;
+	width: 210px;
+	margin: 5px;
+	background-color: rgb(253,246,227);
+	cursor: pointer;
+}
+#activities div:hover
+{
+	box-shadow: 1px 1px 1px rgba(0,0,0,0.3);
+}
+
+#activity
+{
+	padding-top: 20px;
+	padding-bottom: 400px;
+	clear: both;
 }
 
 

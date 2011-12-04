@@ -27,14 +27,16 @@
 			</select>
 		</form>
 	</div>
+	<div id="map_wrapper">
   <div id="map_canvas">This tool currently requires javascript</div>
+  </div>
   
   <div id="map_timeline">
 	  <h2>Move through time</h2>
 	  <p><span id="year-begin"></span> - <span id="year-end"></span></p>
 	  <div id="time-slider"></div>
   </div>
-  <ul id="activities"></ul>
+  <div id="activities"></div>
   <div id="activity"></div>
 
 <script src="/javascript/jquery.js"></script>
@@ -43,6 +45,8 @@
 <script src="/javascript/_.js"></script>
 <script src="/socket.io/socket.io.js"></script>
 <script src="/javascript/site.js"></script>
+<script src="/javascript/jquery.scrollto.js"></script>
+<script src="/javascript/masonry.js"></script>
 <script src="https://www.google.com/jsapi"></script>
 
 <script>
@@ -88,6 +92,11 @@ var loadMapFor = function(options, region) {
 	// show the loading status over the map and disable the filters
 	disableUI();
 
+$("#activities").masonry({
+	itemSelector: '.tile',
+	columnWidth: 230,
+	isAnimated: false
+});
 	
 	// load in the new map
   request({
@@ -167,6 +176,15 @@ var loadActivitiesFor = function(countryCode){
     pagesize:50,
    SectorCategory: $('#sector-filter-list').val()
     }, function(data){
+		$("#map_wrapper").append(
+			$('<div class="instructions">scroll down to see projects</div>').
+			hide().
+			fadeIn().
+			delay(1500).
+			fadeOut(function () {
+				$(this).remove();
+			})
+		);
       var activityUL = $('#activities').empty();
 	  enableUI();
       
@@ -183,12 +201,13 @@ var loadActivitiesFor = function(countryCode){
           
 		  // add these new values to #activities
 		  // TODO: put this somewhere nice in the visualisation
-          $('<li>')
+          $('<div class="tile" />')
             .text(text)
             .data('code', activity.code)
             .appendTo(activityUL);
+
         });
-    });
+		});
 }
 
 // load new map when any of the input fields change
@@ -206,14 +225,13 @@ function buildOptions () {
 
 // load in the description for a given activity
 // TODO: put this somewhere nice in the visualisation
-$('#activities').on('click', 'li', function(){
+$('#activities').on('click', 'div', function(){
   var activityDiv = $('#activity').empty(),
 	ID = $(this).data('code');
   request({
     result: "details",
     ID: ID
     }, function(data){
-      
       console.log("Activity Data: ", data);
       
       var activityData = data['iati-activity'];
@@ -221,8 +239,12 @@ $('#activities').on('click', 'li', function(){
       $('<h2>').text(_.as_text(activityData.title))
         .appendTo(activityDiv);
         
+		// to get the demo working - need real error checking here!
+		try {
       $('<p>').text(_.as_text(activityData.description))
         .appendTo(activityDiv);
+  } catch (ignore) {}
+		$(window).scrollTo("#activity", {duration: 700});
     });
 })
 
@@ -236,8 +258,9 @@ function enableUI () {
 function disableUI () {
 	$("#sector-filter-list").addClass("loading").find("input").attr("disabled", "disabled");
 	$("#map_canvas").append ('<div class="loader hidden" />');
+	$("#activities").empty();
 	setTimeout(function(){
-  	$("#map_canvas .loader").removeClass('hidden');
+		$("#map_canvas .loader").removeClass('hidden');
 	}, 10)
 }
 
