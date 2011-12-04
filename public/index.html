@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=Edge;chrome=1" >
   
-  <title>IATA data explorer</title>
+  <title>index</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="/css/reset.css" type="text/css" media="screen" charset="utf-8">
@@ -84,7 +84,7 @@ var loadMapFor = function(options){
     SectorCategory:sectors || [],
 	'start-date': start,
 	'end-date': end
-    }, function(response){
+    }, function(response) {
       var countries = _(response.Country).as_array(),
 		data = new google.visualization.DataTable(),
 		options = {dataMode:'regions'},
@@ -131,7 +131,7 @@ var loadActivitiesFor = function(countryCode){
           var text = activity.name;
           
           // add on the value if non-zero
-          if(activity.value){
+          if(activity.value && Math.floor(parseFloat(activity.value))){
             text += ' $' + Math.floor(parseFloat(activity.value))
           }
           
