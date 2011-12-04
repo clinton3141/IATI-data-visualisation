@@ -47,7 +47,10 @@
 
 <script>
 var geomap,
-	dataTable;
+	dataTable,
+	currentRegion = undefined;
+
+
 
 	
 // default settings for the IATI call
@@ -122,10 +125,12 @@ var loadMapFor = function(options, region) {
 		  geomap = new google.visualization.GeoChart(container);
 		  document.getElementById('reset_button').style.display = "block";
 		geomap.draw (dataTable, {"dataMode": options.dataMode, "region": region});
+		currentRegion = region;
 	  } else {
 		  geomap = geomap || new google.visualization.GeoChart(container);
 		  document.getElementById('reset_button').style.display = "none";
 		  geomap.draw(dataTable, options);
+		  currentRegion = undefined;
 	  }
 	  google.visualization.events.addListener(geomap, 'regionClick', function (e) {
 	    options.SectorCategory = sectors;
@@ -187,7 +192,7 @@ var loadActivitiesFor = function(countryCode){
 
 // load new map when any of the input fields change
 $('body').on('change', 'input, select', function(){
-	loadMapFor(buildOptions());
+	loadMapFor(buildOptions(), currentRegion);
 });
 
 function buildOptions () {
