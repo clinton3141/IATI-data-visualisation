@@ -43,6 +43,9 @@ io.sockets.on('connection', function (socket) {
 		api.Request(data.params)
 			.on('success', function (response) {
 				socket.emit ('api', {cb:data.cb,response:response});
+			})
+			.on('error', function(error){
+			  socket.emit ('api', {cb:data.cb,error:error});
 			}).end();
 	});
 });
