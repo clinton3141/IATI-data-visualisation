@@ -22,9 +22,9 @@
 		<form action="#">
 			<input id="start-date" type="hidden" name="start-date" />
 			<input type="hidden" id="end-date" name="end-date" />
-			<ul class="init" id="sector-filter-list">
-				<li id="filter-loader">This tool currently requires javascript</li>
-			</ul>
+			<select id="sector-filter-list" multiple="true">
+			 <option>Loading</option>
+			</select>
 		</form>
 	</div>
   <div id="map_canvas">This tool currently requires javascript</div>
@@ -46,8 +46,6 @@
 <script src="https://www.google.com/jsapi"></script>
 
 <script>
-// used for the map
-google.load('visualization', '1', {'packages': ['geochart']});
 var geomap,
 	dataTable;
 
@@ -188,12 +186,12 @@ var loadActivitiesFor = function(countryCode){
 }
 
 // load new map when any of the input fields change
-$('body').on('change', 'input', function(){
-	loadMapFor({
-		SectorCategory: $('#map_controls input[type=checkbox]').serializeArray().map(function(elem){return elem.value}),
-		'start-date': $("#start-date").attr("value"),
-		'end-date': $("#end-date").attr("value")
-	});
+$('body').on('change', 'input, select', function(){
+ loadMapFor({
+   SectorCategory: $('#sector-filter-list').val(),
+   'start-date': $("#start-date").attr("value"),
+   'end-date': $("#end-date").attr("value")
+ });
 });
 
 // load in the description for a given activity
@@ -258,7 +256,8 @@ function updateYears (begin, end) {
 // update the years now
 updateYears ($( "#time-slider" ).slider( "values", 0 ), $( "#time-slider" ).slider( "values", 1 ));
 // load the initial map
-loadMapFor([]);
+google.load('visualization', '1', {'packages': ['geochart']});
+google.setOnLoadCallback(loadMapFor);
 // load the list of sector categories
 request({
   groupby: "SectorCategory",
@@ -266,10 +265,11 @@ request({
   }, function(response){
     
     var categories = _.as_array(response.SectorCategory);
-    $("#sector-filter-list").html(' ');
+    $("#sector-filter-list").empty().on('change', function(){
+      
+    });
     _.each(categories, function(sc){
-
-		$('<li><label><input checked="checked" type="checkbox" name="SectorCategory" value="' + sc.code + '" /> ' + sc.name + '</label></li>')
+      $('<option>', {value:sc.code}).text(sc.name)
         .appendTo('#sector-filter-list');
 
     });

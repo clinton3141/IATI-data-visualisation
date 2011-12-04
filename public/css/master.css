@@ -99,7 +99,7 @@ label
 	font-size: 10px;
 	text-transform: lowercase;
 	height: 300px;
-	overflow-y: scroll;
+	width:100%;
 }
 #sector-filter-list.loading
 {
