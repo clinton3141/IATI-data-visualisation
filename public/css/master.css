@@ -54,8 +54,13 @@ body
 	margin: 0 20px;
 }
 
+.loader.hidden{
+  opacity:0;
+}
 .loader
-{
+{ 
+  -webkit-transition: opacity 1s linear;
+  opacity:1;
 	width: 100%;
 	height: 100%;
 	position: absolute;

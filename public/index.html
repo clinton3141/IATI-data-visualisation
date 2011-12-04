@@ -129,7 +129,7 @@ var loadMapFor = function(options){
        });
 
       
-      geomap = new google.visualization.GeoChart(container);
+      geomap =  geomap || new google.visualization.GeoChart(container);
       geomap.draw(dataTable, options);
 	  // google.visualization.events.addListener(geomap, 'select', mapClick)
 	  google.visualization.events.addListener(geomap, 'regionClick', mapRedraw);
@@ -225,7 +225,10 @@ function enableUI () {
 // disable the UI while a new map is loading
 function disableUI () {
 	$("#sector-filter-list").addClass("loading").find("input").attr("disabled", "disabled");
-	$("#map_canvas").append ('<div class="loader" />');
+	$("#map_canvas").append ('<div class="loader hidden" />');
+	setTimeout(function(){
+  	$("#map_canvas .loader").removeClass('hidden');
+	}, 10)
 }
 
 // add a nice slidey thingy for the date selection
