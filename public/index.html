@@ -44,19 +44,21 @@
 <script src="https://www.google.com/jsapi"></script>
 
 <script>
-
+// used for the map
 google.load('visualization', '1', {'packages': ['geochart']});
 
+// default settings for the IATI call
 request.defaults = {
   format: "json",
   corpus: "fullB",
   // Funder: 'GB-CHC-202918' //oxfam
 };
 	
-
+// Replace 'you need javascript' messages with 'loading'
 document.getElementById('map_canvas').innerHTML = 'Please wait - loading map.';
 document.getElementById('sector-filter-list').innerHTML = 'Please wait - loading map.';
 
+// clicking on a filter for the first time deselects the rest and loads the new map
 $("#sector-filter-list.init li").live ("click", function (e) {
 	$(this).siblings().find("input[type=checkbox]").attr("checked", false);
 	$(this).parent().removeClass("init");
@@ -65,30 +67,15 @@ $("#sector-filter-list.init li").live ("click", function (e) {
 	e.preventDefault ();
 });
 
-//get the list of sector categories
-request({
-  groupby: "SectorCategory",
-  result: "values",
-  }, function(response){
-    
-    var categories = _.as_array(response.SectorCategory);
-    $("#sector-filter-list").html(' ');
-    _.each(categories, function(sc){
-
-		$('<li><label><input checked="checked" type="checkbox" name="SectorCategory" value="' + sc.code + '" /> ' + sc.name + '</label></li>')
-        .appendTo('#sector-filter-list');
-
-    });
-});
-
-
+// use to load in a new map
 var loadMapFor = function(options){
 	var sectors = options.SectorCategory || [],
 	start = options['start-date'] || '1900-01-01',
 	end = options['end-date'] || '2100-01-01';
+	// show the loading status over the map and disable the filters
 	disableUI();
-	console.log(sectors);
 
+	// load in the new map
   request({
     groupby: "Country",
     result: "values",
@@ -96,31 +83,38 @@ var loadMapFor = function(options){
 	'start-date': start,
 	'end-date': end
     }, function(response){
+      var countries = _(response.Country).as_array(),
+		data = new google.visualization.DataTable(),
+		options = {dataMode:'regions'},
+		container = document.getElementById('map_canvas'),
+		geomap;
+
+		// reenable the filters and remove the loading status over the map
       enableUI();
-      var countries = _(response.Country).as_array();
 
-       var data = new google.visualization.DataTable();
-       var options = {dataMode:'regions'};
-
+	  // add new data to the datatable which is used to populate the map
        data.addColumn('string', '', 'Country');
        data.addColumn('number', 'Activities', 'a');
+	   // TODO: Is this possible?
        // data.addColumn('string', 'HOVER', 'HoverText');
        data.addRows(countries.length);
        $.map(countries, function(country, i) {
          data.setValue(i, 0, country.code);
          data.setValue(i, 1, parseFloat(country.count));
+		 // TODO: See note above.
           // data.setValue(i, 2, country.name);
        });
 
-      var container = document.getElementById('map_canvas');
-      var geomap = new google.visualization.GeoChart(container);
+      
+      geomap = new google.visualization.GeoChart(container);
       geomap.draw(data, options);
   });
   
 };
 
-
+// load in the list of activities for a specific country code (e.g. AF)
 var loadActivitiesFor = function(countryCode){
+	// make the request
   request({
     result: "values",
     Country:countryCode,
@@ -140,18 +134,17 @@ var loadActivitiesFor = function(countryCode){
             text += ' $' + Math.floor(parseFloat(activity.value))
           }
           
+		  // add these new values to #activities
+		  // TODO: put this somewhere nice in the visualisation
           $('<li>')
             .text(text)
             .data('code', activity.code)
             .appendTo(activityUL);
-            
-        })
-      
+        });
     });
-  
 }
 
-
+// load new map when any of the input fields change
 $('body').on('change', 'input', function(){
 	loadMapFor({
 		SectorCategory: $('#map_controls input[type=checkbox]').serializeArray().map(function(elem){return elem.value}),
@@ -160,12 +153,11 @@ $('body').on('change', 'input', function(){
 	});
 });
 
-
+// load in the description for a given activity
+// TODO: put this somewhere nice in the visualisation
 $('#activities').on('click', 'li', function(){
-  
-  var activityDiv = $('#activity').empty();
-  
-  var ID = $(this).data('code');
+  var activityDiv = $('#activity').empty(),
+	ID = $(this).data('code');
   request({
     result: "details",
     ID: ID
@@ -183,16 +175,19 @@ $('#activities').on('click', 'li', function(){
     });
 })
 
-
+// re-enable the UI after a new map has loaded
 function enableUI () {
 	$("#sector-filter-list").removeClass("loading").find("input").attr("disabled", false);
 	$(".loader").remove ();
 }
+
+// disable the UI while a new map is loading
 function disableUI () {
 	$("#sector-filter-list").addClass("loading").find("input").attr("disabled", "disabled");
 	$("#map_canvas").append ('<div class="loader" />');
 }
 
+// add a nice slidey thingy for the date selection
 $( "#time-slider" ).slider({
 	values: [1950, (new Date()).getFullYear()],
 	min: 1950,
@@ -206,9 +201,8 @@ $( "#time-slider" ).slider({
 		$("#end-date").trigger("change");
 	}
 });
-// update the years now
-updateYears ($( "#time-slider" ).slider( "values", 0 ), $( "#time-slider" ).slider( "values", 1 ));
 
+// update the years listed in both the hidden inputs and the year display above the slider
 function updateYears (begin, end) {
 		$("#year-begin").html(begin);
 		$("#year-end").html(end);
@@ -216,8 +210,27 @@ function updateYears (begin, end) {
 		$("#end-date").attr("value", end + '-01-01');
 }
 
+// TIME TO PUT ALL THIS HARD WORK TO, err, WORK!
+
+// update the years now
+updateYears ($( "#time-slider" ).slider( "values", 0 ), $( "#time-slider" ).slider( "values", 1 ));
 // load the initial map
 loadMapFor([]);
+// load the list of sector categories
+request({
+  groupby: "SectorCategory",
+  result: "values",
+  }, function(response){
+    
+    var categories = _.as_array(response.SectorCategory);
+    $("#sector-filter-list").html(' ');
+    _.each(categories, function(sc){
+
+		$('<li><label><input checked="checked" type="checkbox" name="SectorCategory" value="' + sc.code + '" /> ' + sc.name + '</label></li>')
+        .appendTo('#sector-filter-list');
+
+    });
+});
 </script>
 
 </body>
