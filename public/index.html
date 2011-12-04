@@ -18,7 +18,7 @@
 	<div id="map_controls"> 
 		<h2>Toolbox</h2>
 		<p>Select the types of work you'd like to learn more about</p>
-		<div id="reset_button">Reset Map</div>
+		<p id="reset_button">Reset Map</p>
 		<form action="#">
 			<input id="start-date" type="hidden" name="start-date" />
 			<input type="hidden" id="end-date" name="end-date" />
@@ -80,22 +80,13 @@ $("#sector-filter-list.init li").live ("click", function (e) {
 
 
 // use to load in a new map
-var loadMapFor = function(options){
+var loadMapFor = function(options, region) {
 	var sectors = options.SectorCategory || [],
 	start = options['start-date'] || '1900-01-01',
 	end = options['end-date'] || '2100-01-01';
 	// show the loading status over the map and disable the filters
 	disableUI();
 
-	//function used to redraw regions when clicked on
-	var mapRedraw = function(e) {
-		var localOptions = {"dataMode":options.dataMode,"region":e.region};
-		if (e.region) { //if a valid region is clicked
-			geomap.draw(dataTable,localOptions); //draw clicked on region
-		} else {
-			geomap.draw(dataTable,options); // draw entire world map
-		}
-	}	
 	
 	// load in the new map
   request({
@@ -108,9 +99,6 @@ var loadMapFor = function(options){
       var countries = _(response.Country).as_array(),
 		options = {dataMode:'regions'},
 		container = document.getElementById('map_canvas');
-
-
-
 
 		dataTable = new google.visualization.DataTable();
 
@@ -132,17 +120,26 @@ var loadMapFor = function(options){
 
       
       geomap = new google.visualization.GeoChart(container);
-      geomap.draw(dataTable, options);
+	  if (region) {
+		  document.getElementById('reset_button').style.display = "block";
+		geomap.draw (dataTable, {"dataMode": options.dataMode, "region": region});
+	  } else {
+		  document.getElementById('reset_button').style.display = "none";
+		  geomap.draw(dataTable, options);
+	  }
 	  // google.visualization.events.addListener(geomap, 'select', mapClick)
-	  google.visualization.events.addListener(geomap, 'regionClick', mapRedraw);
+	  google.visualization.events.addListener(geomap, 'regionClick', function (e) {
+		  loadMapFor (options, e.region);
+	  });
 	  
 	  //clicking on the reset map button resets the map
-	  $("#reset_button").live("click", function () {
-		geomap.draw(dataTable, options);
+	  $("#reset_button").click(function () {
+		loadMapFor(buildOptions());
 	  });
 	  
   });
 };
+
 
 function mapClick () {
 	var selection = geomap.getSelection ();
@@ -189,12 +186,16 @@ var loadActivitiesFor = function(countryCode){
 
 // load new map when any of the input fields change
 $('body').on('change', 'input', function(){
-	loadMapFor({
+	loadMapFor(buildOptions());
+});
+
+function buildOptions () {
+	return {
 		SectorCategory: $('#map_controls input[type=checkbox]').serializeArray().map(function(elem){return elem.value}),
 		'start-date': $("#start-date").attr("value"),
 		'end-date': $("#end-date").attr("value")
-	});
-});
+	}
+}
 
 // load in the description for a given activity
 // TODO: put this somewhere nice in the visualisation
