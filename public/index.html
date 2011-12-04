@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=Edge;chrome=1" >
   
-  <title>index</title>
+  <title>IATA data explorer</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="/css/reset.css" type="text/css" media="screen" charset="utf-8">
@@ -122,7 +122,6 @@ var loadActivitiesFor = function(countryCode){
     Country:countryCode,
     pagesize:50
     }, function(data){
-      
       var activityUL = $('#activities').empty();
       
       _(data['iati-activity']).chain()
