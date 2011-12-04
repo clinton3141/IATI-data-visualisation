@@ -63,7 +63,9 @@ $("#sector-filter-list.init li").live ("click", function (e) {
 	$(this).siblings().find("input[type=checkbox]").attr("checked", false);
 	$(this).parent().removeClass("init");
 	$(this).find("input[type=checkbox]").attr("checked", true);
-	loadMapFor ($(this).find("input[type=checkbox]").attr("value"));
+	loadMapFor ({
+		SectorCategory: [$(this).find("input[type=checkbox]").attr("value")]
+	})
 	e.preventDefault ();
 });
 
