@@ -46,6 +46,8 @@
 <script>
 // used for the map
 google.load('visualization', '1', {'packages': ['geochart']});
+var geomap,
+	dataTable;
 
 // default settings for the IATI call
 request.defaults = {
@@ -86,33 +88,47 @@ var loadMapFor = function(options){
 	'end-date': end
     }, function(response) {
       var countries = _(response.Country).as_array(),
-		data = new google.visualization.DataTable(),
 		options = {dataMode:'regions'},
-		container = document.getElementById('map_canvas'),
-		geomap;
+		container = document.getElementById('map_canvas');
+
+
+
+
+		dataTable = new google.visualization.DataTable();
 
 		// reenable the filters and remove the loading status over the map
       enableUI();
 
 	  // add new data to the datatable which is used to populate the map
-       data.addColumn('string', '', 'Country');
-       data.addColumn('number', 'Activities', 'a');
+       dataTable.addColumn('string', '', 'Country');
+       dataTable.addColumn('number', 'Activities', 'a');
 	   // TODO: Is this possible?
        // data.addColumn('string', 'HOVER', 'HoverText');
-       data.addRows(countries.length);
+       dataTable.addRows(countries.length);
        $.map(countries, function(country, i) {
-         data.setValue(i, 0, country.code);
-         data.setValue(i, 1, parseFloat(country.count));
+         dataTable.setValue(i, 0, country.code);
+         dataTable.setValue(i, 1, parseFloat(country.count));
 		 // TODO: See note above.
           // data.setValue(i, 2, country.name);
        });
 
       
       geomap = new google.visualization.GeoChart(container);
-      geomap.draw(data, options);
+      geomap.draw(dataTable, options);
+	  google.visualization.events.addListener(geomap, 'select', mapClick);
   });
-  
 };
+
+function mapClick () {
+	var selection = geomap.getSelection ();
+	if (_.isArray (selection)) {
+		disableUI();
+		loadActivitiesFor(dataTable.getValue(selection[0].row, 0));
+	}
+}
+
+
+
 
 // load in the list of activities for a specific country code (e.g. AF)
 var loadActivitiesFor = function(countryCode){
@@ -123,6 +139,7 @@ var loadActivitiesFor = function(countryCode){
     pagesize:50
     }, function(data){
       var activityUL = $('#activities').empty();
+	  enableUI();
       
       _(data['iati-activity']).chain()
         .as_array()
