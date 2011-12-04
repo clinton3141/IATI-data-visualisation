@@ -16,7 +16,7 @@
 html
 {
 	font-family: Arial;
-	background-color: rgb(253,246,227);
+	background: rgb(253,246,227) url(../images/speckle.png) top center repeat;
 }
 
 body
