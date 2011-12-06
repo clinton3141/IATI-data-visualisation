@@ -51,6 +51,23 @@ io.sockets.on('connection', function (socket) {
 });
 
 
+// api proxy
+app.get('/api', function(req, res){
+	
+	// cache for an hour
+	res.header('Cache-Control', 'public, max-age=3600');
+	
+	api.Request(req.query)
+		.on('success', function(data){
+			res.json(data);
+		})
+		.on('error', function(err){
+			res.json({error:err});
+		})
+		.end();
+});
+
+
 
 app.listen(process.env.PORT|| 3000);
 console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);

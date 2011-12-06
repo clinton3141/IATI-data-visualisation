@@ -63,3 +63,11 @@ var request = (function(){
     socket.emit ('api', {params:params, cb:cbid});
   };
 }());
+
+
+
+// alternative, use standard ajax - comment this out to 
+// switch back to websocket transport
+var request = function(params, callback){
+	$.getJSON('api',params).done(callback);
+}
